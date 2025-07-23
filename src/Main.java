@@ -1,15 +1,16 @@
+import Main.Book;
+import Main.EBook;
+import Main.HardCopyBook;
+
 public class Main {
 
-    // Inner class Book
-	// test
+    // Parent class Book
     public static class Book {
-        // Attributes
-        private String title;
-        private String author;
-        private String isbn;
-        private boolean available;
+        protected String title;
+        protected String author;
+        protected String isbn;
+        protected boolean available;
 
-        // Method 1: Assign values to the book’s attributes
         public void setBookDetails(String title, String author, String isbn, boolean available) {
             this.title = title;
             this.author = author;
@@ -17,16 +18,13 @@ public class Main {
             this.available = available;
         }
 
-        // Method 2: Display the book's details
         public void displayBookDetails() {
             System.out.println("Title       : " + title);
             System.out.println("Author      : " + author);
             System.out.println("ISBN        : " + isbn);
             System.out.println("Availability: " + (available ? "Available" : "Borrowed"));
-            System.out.println("------------------------------");
         }
 
-        // Method 3: Mark the book as borrowed (only if available)
         public boolean borrowBook() {
             if (available) {
                 available = false;
@@ -38,37 +36,68 @@ public class Main {
             }
         }
 
-        // Method 4: Return the book and mark it as available again
         public void returnBook() {
             available = true;
             System.out.println("You have returned \"" + title + "\". Thank you!");
         }
+    }
 
-        // Optional: Getter for ISBN
-        public String getISBN() {
-            return isbn;
+    // Subclass: HardCopyBook
+    public static class HardCopyBook extends Book {
+        private int pageCount;
+        private double weightKg;
+
+        public void setHardCopyDetails(String title, String author, String isbn, boolean available, int pageCount, double weightKg) {
+            setBookDetails(title, author, isbn, available);
+            this.pageCount = pageCount;
+            this.weightKg = weightKg;
+        }
+
+        @Override
+        public void displayBookDetails() {
+            super.displayBookDetails();
+            System.out.println("Pages       : " + pageCount);
+            System.out.println("Weight      : " + weightKg + " kg");
+            System.out.println("------------------------------");
+        }
+    }
+
+    // Subclass: EBook
+    public static class EBook extends Book {
+        private String format;
+        private double fileSizeMB;
+
+        public void setEBookDetails(String title, String author, String isbn, boolean available, String format, double fileSizeMB) {
+            setBookDetails(title, author, isbn, available);
+            this.format = format;
+            this.fileSizeMB = fileSizeMB;
+        }
+
+        @Override
+        public void displayBookDetails() {
+            super.displayBookDetails();
+            System.out.println("Format      : " + format);
+            System.out.println("File Size   : " + fileSizeMB + " MB");
+            System.out.println("------------------------------");
         }
     }
 
     // Main method
     public static void main(String[] args) {
-        // Create a new book instance
-        Book myBook = new Book();
-        myBook.setBookDetails("Effective Java", "Joshua Bloch", "978-0134685991", true);
+        // Create and show EBook
+        EBook ebook = new EBook();
+        ebook.setEBookDetails("Digital Fortress", "Dan Brown", "978-0312944926", true, "ePub", 1.2);
+        ebook.displayBookDetails();
 
-        // Display book details
-        myBook.displayBookDetails();
+        // Create and show HardCopyBook
+        HardCopyBook hardBook = new HardCopyBook();
+        hardBook.setHardCopyDetails("To Kill a Mockingbird", "Harper Lee", "978-0060935467", true, 336, 0.5);
+        hardBook.displayBookDetails();
 
-        // Try to borrow the book
-        myBook.borrowBook();
-
-        // Try to borrow again
-        myBook.borrowBook();
-
-        // Return the book
-        myBook.returnBook();
-
-        // Display final status
-        myBook.displayBookDetails();
+        // Test borrow and return
+        hardBook.borrowBook();
+        hardBook.borrowBook(); // Try borrowing again
+        hardBook.returnBook();
+        hardBook.displayBookDetails();
     }
 }
